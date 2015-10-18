@@ -24,6 +24,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -154,60 +156,18 @@ public class MinecraftHackathon extends JavaPlugin implements Listener {
 			getLogger().info(con.getResponseMessage());  
 		}  
 	}
-
-	public void setupTcp() {
-		Runnable thread = new Runnable() {
-			@Override
-			public void run() {
-				int portNumber = 8080;
-				ServerSocket serverSocket;
-				try {
-					serverSocket = new ServerSocket(portNumber);
-					while (true) {
-						//						Socket clientSocket = serverSocket.accept();
-						//						PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-						World world = Bukkit.getServer().getWorlds().get(0);
-						Block block = world.getBlockAt(0, 0, 0);
-						System.out.println(block);
-						// BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+	
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (cmd.getName().equalsIgnoreCase("refresh")) {
+			try {
+				printShit();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
 			}
-		};
-		thread.run();
-	}
-
-	/*
-	class MyHandler implements HttpHandler {
-
-		@Override
-		public void handle(HttpExchange exchange) throws IOException {
-			String requestMethod = exchange.getRequestMethod();
-			if (requestMethod.equalsIgnoreCase("GET")) {
-				Headers responseHeaders = exchange.getResponseHeaders();
-				responseHeaders.set("Content-type", "application/json");
-				exchange.sendResponseHeaders(200, 0);
-
-				Map<String, String> map = queryToMap(exchange.getRequestURI().getQuery());
-				OutputStream responseBody = exchange.getResponseBody();
-			}
+			return true;
 		}
-
-		public Map<String, String> queryToMap(String query){
-			Map<String, String> result = new HashMap<String, String>();
-			for (String param : query.split("&")) {
-				String pair[] = param.split("=");
-				if (pair.length>1) {
-					result.put(pair[0], pair[1]);
-				}else{
-					result.put(pair[0], "");
-				}
-			}
-			return result;
-		}
+		return false;
 	}
-	 */
 
 }
